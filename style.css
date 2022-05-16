@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico:wght@400;700&display=swap');
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: sans-serif;
+  background: #1e2124;
+  color: #c6e2ff;
+  font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,3 +16,63 @@ body {
   margin: 0;
 }
 
+h1 {
+  color: #c6e2ff;
+  font-family: 'Pacifico', sans-serif;
+  font-size: 48px;
+  letter-spacing: 4px;
+	text-shadow: 0 0 54px rgba(30,132,242,0.78);
+}
+
+canvas {
+  background: #181a1c;
+  display: block;
+  border-radius: 5px;
+}
+
+.btn {
+  cursor: pointer;
+  background: #161617;
+  color: #c6e2ff;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.btn:hover {
+  background: #111;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.rules-btn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
+
+.rules {
+  background: #282b30;
+  color: #c6e2ff;
+  line-height: 1.5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400px;
+  min-height: 100vh;
+  padding: 20px;
+  border-right: 3px solid #111;
+  transform: translateX(-400px);
+  transition: transform 1s ease-in-out;
+}
+
+.rules.show {
+  transform: translateX(0);
+}
