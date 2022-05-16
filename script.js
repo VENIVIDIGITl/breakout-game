@@ -41,7 +41,7 @@ const paddle = {
   color: '#aec8e3',
   x: canvas.width / 2 - 40,
   y: canvas.height -20,
-  width: 80,
+  width: 100,
   height: 10,
   speed: 8,
   dx: 0
@@ -125,6 +125,76 @@ function draw() {
 }
 
 
+// Move ball on Canvas
+function moveBall() {
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  // Wall collision detection (right/left walls)
+  if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+    // bounce from the wall by reversing its dx property value
+    ball.dx *= -1; 
+  }
+
+  // Wall collision detection (bottom/top walls)
+  if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+    // bounce from the top by reversing its dy property value
+    ball.dy *= -1;
+  }
+
+  // Paddle collision detection
+  const paddleCollision = ball.x - ball.radius > paddle.x && ball.x + ball.radius < paddle.x + paddle.width && ball.y + ball.radius > paddle.y;
+  if (paddleCollision) {
+    ball.dy = -ball.speed;
+  }
+
+  // Wall collision detection (bottom) - Game Over
+  if (ball.y + ball.radius > canvas.height) {
+    showAllBricks();
+    score = 0;
+  }
+
+  // Brick collision detection - Score
+  bricks.forEach(column => {
+    column.forEach(brick => {
+      // check first if brick is drawn on canvas anymore
+      if (brick.visible) {
+        const left = ball.x - ball.radius > brick.x; // left brick side check
+        const right = ball.x + ball.radius < brick.x + brick.width; // right brick side check
+        const top = ball.y + ball.radius > brick.y; // top brick side check
+        const bottom = ball.y - ball.radius < brick.y + brick.height; // bottom brick side check
+        const brickCollision = left && right && top && bottom;
+        if (brickCollision) {
+          // bounce ball
+          ball.dy *= -1;
+          // hide brick
+          brick.visible = false;
+          // increase score
+          increaseScore();
+        }
+      }
+    });
+  });
+}
+
+
+// Increase score
+function increaseScore() {
+  score++;
+  if (score % (brickColumnCount * brickRowCount) === 0) {
+    showAllBricks();
+  }
+}
+
+
+// Make all bricks appear
+function showAllBricks() {
+  bricks.forEach(column => {
+    column.forEach(brick => brick.visible = true);
+  });
+}
+
+
 // Move paddle on canvas
 function movePaddle() {
   paddle.x += paddle.dx
@@ -143,7 +213,7 @@ function movePaddle() {
 // Update canvas drawing and animation
 function update() {
   movePaddle();
-
+  moveBall();
   // Draw everything
   draw();
 
