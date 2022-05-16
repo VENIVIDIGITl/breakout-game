@@ -7,10 +7,6 @@ let score = 0;
 const brickRowCount = 5;
 const brickColumnCount = 9;
 
-// Show and close rules event handlers
-showRulesBtn.addEventListener('click', () => rules.classList.add('show'));
-closeRulesBtn.addEventListener('click', () => rules.classList.remove('show'));
-
 
 // Create canvas context
 const ctx = canvas.getContext('2d');
@@ -47,7 +43,7 @@ const paddle = {
   y: canvas.height -20,
   width: 80,
   height: 10,
-  speed: 4,
+  speed: 8,
   dx: 0
 }
 
@@ -120,11 +116,67 @@ function drawBricks() {
 
 // Draw all shapes on canvas
 function draw() {
+  // Clear canvas first to prevent previous state of shapes from staying in effect after state change
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
   drawPaddle();
   drawScore();
   drawBricks();
 }
 
-// Draw everything on page load
-draw();
+
+// Move paddle on canvas
+function movePaddle() {
+  paddle.x += paddle.dx
+
+  // Wall detection
+  if (paddle.x + paddle.width > canvas.width) {
+    paddle.x = canvas.width - paddle.width;
+  }
+
+  if (paddle.x < 0) {
+    paddle.x = 0;
+  }
+}
+
+
+// Update canvas drawing and animation
+function update() {
+  movePaddle();
+
+  // Draw everything
+  draw();
+
+  requestAnimationFrame(update);
+}
+
+
+// Keydown event - Move paddle
+function keyDown(event) {
+  if (event.key === 'Right' || event.key === 'ArrowRight') {
+    paddle.dx = paddle.speed;
+  } else if (event.key === 'Left' || event.key === 'ArrowLeft') {
+    paddle.dx = -paddle.speed;
+  }
+}
+
+
+// Keyup event - Stop paddle movement
+function keyUp(event) {
+  const rightKey = event.key === 'Right' || event.key === 'ArrowRight';
+  const leftKey = event.key === 'Left' || event.key === 'ArrowLeft';
+  if (rightKey || leftKey) {
+    paddle.dx = 0;
+  }
+}
+
+
+update();
+
+// Keyboard event handlers
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
+
+// Show and close rules event handlers
+showRulesBtn.addEventListener('click', () => rules.classList.add('show'));
+closeRulesBtn.addEventListener('click', () => rules.classList.remove('show'));
